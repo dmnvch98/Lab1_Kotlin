@@ -1,5 +1,6 @@
 package com.example.lab1
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 
@@ -12,6 +13,7 @@ class Note(val id: Long?, var title: String, var content: String, var createdAt:
         const val COLUMN_CONTENT = "content"
         const val COLUMN_CREATED_AT = "created_at"
 
+        @SuppressLint("Range")
         fun all(context: Context): List<Note> {
             val dbHelper = DBHelper(context)
             val cursor = dbHelper.readableDatabase.query(
