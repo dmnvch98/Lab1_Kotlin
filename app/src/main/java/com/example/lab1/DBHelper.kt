@@ -60,10 +60,10 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
     fun addNote(note: Note) {
         val db = this.writableDatabase
         val values = ContentValues()
-        values.put(Note.COLUMN_TITLE, note.title)
-        values.put(Note.COLUMN_CONTENT, note.content)
-        values.put(Note.COLUMN_CREATED_AT, note.createdAt)
-        db.insert(Note.TABLE_NAME, null, values)
+        values.put(NotesContract.Columns.TITLE, note.title)
+        values.put(NotesContract.Columns.TEXT, note.content)
+        values.put(NotesContract.Columns.DATE, note.createdAt)
+        db.insert(NotesContract.TABLE_NAME, null, values)
         db.close()
     }
 
