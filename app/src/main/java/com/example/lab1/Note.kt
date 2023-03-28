@@ -1,5 +1,6 @@
 package com.example.lab1
 
+import DBHelper
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context

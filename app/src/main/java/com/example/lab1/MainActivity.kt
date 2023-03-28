@@ -1,58 +1,58 @@
 package com.example.lab1
 
+import DBHelper
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import com.example.lab1.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var dbHelper: DBHelper
+    private lateinit var notesList: MutableList<Note>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        dbHelper = DBHelper(this)
+        notesList = dbHelper.getAllNotes()
+    }
 
-        setSupportActionBar(binding.toolbar)
+    private fun showNotes() {
+        val listView = findViewById<ListView>(R.id.notes_listview)
+        val notesAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_2, android.R.id.text1, notesList)
+        listView.adapter = notesAdapter
+    }
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+    private fun clearFields() {
+        findViewById<EditText>(R.id.note_title_edittext).setText("")
+        findViewById<EditText>(R.id.note_text_edittext).setText("")
+    }
 
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+    fun addNoteOnClick(view: View) {
+        val titleEditText = findViewById<EditText>(R.id.note_title_edittext)
+        val textEditText = findViewById<EditText>(R.id.note_text_edittext)
+
+        val title = titleEditText.text.toString()
+        val text = textEditText.text.toString()
+        if (title.isNotEmpty() && text.isNotEmpty()) {
+            val note = Note(
+                null,
+                title,
+                text,
+                System.currentTimeMillis()
+            )
+            dbHelper.addNote(note)
+            notesList.clear()
+            notesList.addAll(dbHelper.getAllNotes())
+            showNotes()
+            clearFields()
+        } else {
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
-    }
 }
