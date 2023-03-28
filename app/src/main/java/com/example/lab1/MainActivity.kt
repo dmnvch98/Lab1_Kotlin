@@ -3,11 +3,11 @@ package com.example.lab1
 import DBHelper
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.ListView
-import android.widget.Toast
+import android.view.ViewGroup
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import java.text.DateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var dbHelper: DBHelper
@@ -19,13 +19,30 @@ class MainActivity : AppCompatActivity() {
 
         dbHelper = DBHelper(this)
         notesList = dbHelper.getAllNotes()
+        showNotes()
     }
 
     private fun showNotes() {
         val listView = findViewById<ListView>(R.id.notes_listview)
-        val notesAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_2, android.R.id.text1, notesList)
+        val notesAdapter = object : ArrayAdapter<Note>(this, R.layout.note_item, R.id.note_title_textview, notesList) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                val note = notesList[position]
+
+                val dateTextView = view.findViewById<TextView>(R.id.note_date_textview)
+                val titleTextView = view.findViewById<TextView>(R.id.note_title_textview)
+                val textTextView = view.findViewById<TextView>(R.id.note_text_textview)
+
+                dateTextView.text = DateFormat.getDateTimeInstance().format(Date(note.createdAt))
+                titleTextView.text = note.title
+                textTextView.text = note.content
+
+                return view
+            }
+        }
         listView.adapter = notesAdapter
     }
+
 
     private fun clearFields() {
         findViewById<EditText>(R.id.note_title_edittext).setText("")
