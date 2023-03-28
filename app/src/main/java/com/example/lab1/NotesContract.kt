@@ -1,10 +1,8 @@
 package com.example.lab1
 
 object NotesContract {
-    // Название таблицы
     const val TABLE_NAME = "notes"
     
-    // Столбцы таблицы
     object Columns {
         const val ID = "id"
         const val TITLE = "title"
@@ -12,7 +10,6 @@ object NotesContract {
         const val DATE = "date"
     }
     
-    // Создание таблицы
     const val CREATE_TABLE =
         "CREATE TABLE $TABLE_NAME (" +
                 "${Columns.ID} INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -20,7 +17,5 @@ object NotesContract {
                 "${Columns.TEXT} TEXT," +
                 "${Columns.DATE} TEXT" +
         ")"
-    
-    // Удаление таблицы
     const val DROP_TABLE = "DROP TABLE IF EXISTS $TABLE_NAME"
 }
